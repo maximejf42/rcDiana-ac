@@ -5,7 +5,15 @@ language: python
 services:
   - docker
 
+#env:
+#  RCD_ARCH=amd64
+#  RCD_ARCH=armv7hf
+
 script:
 
   # Build conductors
-  - cd conductors && docker-compose build
+  - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors
+  - docker-compose build
+
+#  - cd $TRAVIS_BUILD_DIR/ansible-containers/base
+#  - ansible-container build

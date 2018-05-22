@@ -15,7 +15,7 @@ services:
       - "8042:8042"
 
   python:
-    image: rcdiana:python
+    image: rcdiana/python
 #    init: true
     restart: always
     privileged: true
