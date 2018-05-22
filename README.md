@@ -42,3 +42,9 @@ $ sh tag_and_push.sh
 ```
 
 Push the update to resin.io, which will rebuild the images in the root docker-compoose.yml
+
+
+
+Architecture names for multiarch:
+
+https://raw.githubusercontent.com/docker-library/official-images/a7ad3081aa5f51584653073424217e461b72670a/bashbrew/go/vendor/src/github.com/docker-library/go-dockerlibrary/architecture/oci-platform.go
