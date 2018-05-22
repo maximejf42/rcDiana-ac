@@ -1,0 +1,23 @@
+# Project builder for resin.io devices
+# rcdiana is multiarch, so no need to configure further!
+version: '2.1'
+
+services:
+
+  dicom:
+    image: rcdiana/dicom
+#    init: true
+    restart: always
+    privileged: true
+    ports:
+      - "422:22"
+      - "4242:4242"
+      - "8042:8042"
+
+  python:
+    image: rcdiana:python
+#    init: true
+    restart: always
+    privileged: true
+    ports:
+      - "522:22"

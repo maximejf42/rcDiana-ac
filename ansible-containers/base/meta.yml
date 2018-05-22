@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Derek Merck
+  description: rcDiana http://github.com/derekmerck/rcdiana_ac
+  company: Rhode Island Hospital
+
+  license: MIT
+
+  min_ansible_container_version: 0.9.3rc0
+
+  #github_branch:
+
+  tags: [orthanc, conda, multiarch, amd64, armv7hf, raspberrypi3, diana, rcdiana, resinio]

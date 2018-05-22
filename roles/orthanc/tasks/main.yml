@@ -1,0 +1,17 @@
+---
+# tasks file for orthanc
+
+- name: Install orthanc
+  apt:
+    name: orthanc
+
+- name: Add orthanc.json
+  template:
+    src: orthanc.json.j2
+    dest: /etc/orthanc.json
+  notify: restart_orthanc  # this is irrelevant in ansible-container
+
+- name: Start orthanc
+  service:
+    name: orthanc
+    enabled: true

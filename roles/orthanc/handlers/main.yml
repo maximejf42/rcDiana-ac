@@ -1,0 +1,8 @@
+---
+# handlers file for orthanc
+
+- name: restart_orthanc
+  service:
+    name:  orthanc
+    state: restarted
+

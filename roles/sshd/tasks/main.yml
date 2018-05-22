@@ -1,0 +1,21 @@
+---
+# tasks file for sshd
+
+- name: Install openssh-server
+  apt:
+    name: openssh-server
+
+- lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '#PermitRootLogin prohibit-password'
+    line: 'PermitRootLogin yes'
+
+- lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: 'UsePAM yes'
+    line: 'UsePAM no'
+
+- name: Start sshd
+  service:
+    name: ssh
+    enabled: true

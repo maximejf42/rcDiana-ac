@@ -1,0 +1,5 @@
+---
+# defaults file for conda
+
+# TODO: Need a default, but 'amd64' segfaults on armv7hf builds...need to set this by hand?
+#RCD_ARCH: amd64

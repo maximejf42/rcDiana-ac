@@ -1,0 +1,11 @@
+sudo: required
+
+language: python
+
+services:
+  - docker
+
+script:
+
+  # Build conductors
+  - cd conductors && docker-compose build
