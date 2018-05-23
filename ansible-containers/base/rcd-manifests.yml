@@ -1,0 +1,38 @@
+- image: "rcdiana/dicom:latest"
+  manifests:
+    -
+      image: "rcdiana/dicom:armv7hf"
+      ac_name: rcdiana-armv7hf-dicom
+      platform:
+        architecture: arm
+        variant: v7
+        os: linux
+    -
+      image: "rcdiana/dicom:armv7hf"
+      ac_name: rcdiana-armv7hf-dicom
+      platform:
+        architecture: arm64
+        variant: v8
+        os: linux
+    -
+      image: "rcdiana/dicom:amd64"
+      ac_name: rcdiana-amd64-dicom
+      platform:
+        architecture: amd64
+        os: linux
+#
+#- image: rcdiana/python:latest
+#  manifests:
+#    -
+#      image: "rcdiana/python:armv7hf"
+#      ac_name: rcdiana-armv7hf-python
+#      platform:
+#        architecture: arm
+#        variant: v7
+#        os: linux
+#    -
+#      image: "rcdiana/python:amd64"
+#      ac_name: rcdiana-amd64-python
+#      platform:
+#        architecture: amd64
+#        os: linux

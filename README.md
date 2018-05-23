@@ -19,7 +19,7 @@ $ cd ansible-containers/conductors
 $ docker-compose build
 ```
 
-This provides conductor images tagged to be used with [base images](https://docs.resin.io/reference/base-images/resin-base-images/) `resin-amd64-debian:stretch` and `resin-armv7hf-debian:stretch`.  The armv7hf compilation of crypto, etc. can take a LOG time.
+This provides conductor images tagged to be used with [base images](https://docs.resin.io/reference/base-images/resin-base-images/) `resin-amd64-debian:stretch` and `resin-armv7hf-debian:stretch`.  The armv7hf compilation of crypto, etc. can take a _long_ time.
 
 # TODO: SHOULD PUSH THEM TO CONDUCTOR REPOS, SO WE CAN PULL AND RETAG ON TRAVIS
 
@@ -32,7 +32,7 @@ $ docker stop $(docker ps -aq)
 Build Diana base services from roles.
 ```bash
 $ cd ansible-containers/base
-$ ansible-container build
+$ ansible-container --config-file base_container.yml build
 ```
 
 Push containers to Docker Hub namespace, resin.io projects, or other registries.  `tag_and_push.sh` creates a multi-architecture repo.

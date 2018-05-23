@@ -4,11 +4,11 @@
 
 - set_fact:
     CONDA_PKG: "https://repo.continuum.io/miniconda/Miniconda2-4.4.10-Linux-x86_64.sh"
-  when: "{{ RCD_ARCH == 'amd64' }}"
+  when: RCD_ARCH=="amd64"
 
 - set_fact:
     CONDA_PKG: "https://github.com/jjhelmus/berryconda/releases/download/v2.0.0/Berryconda2-2.0.0-Linux-armv7l.sh"
-  when: "{{ RCD_ARCH == 'armv7hf' }}"
+  when: RCD_ARCH=="armv7hf"
 
 - debug:
     msg: "Set CONDA_PKG to {{ CONDA_PKG }}"
@@ -31,6 +31,11 @@
   file:
     name: /tmp/conda.sh
     state: absent
+
+- name: Fix $PATH for root
+  lineinfile:
+    name: ~/.bashrc
+    line: export PATH=/opt/conda/bin:$PATH
 
 - name: Fix $PATH systemwide with official install tools
   file:

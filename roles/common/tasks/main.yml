@@ -13,12 +13,35 @@
     name: root
     password: "{{ ROOT_PASSWORD }}"
 
-- name: Install dumb init
+- name: Determine Tini version
+  set_fact:
+    TINI_VERSION: v0.18.0
+    TINI_PKG: tini-armhf
+  when: RCD_ARCH=="armv7hf"
+
+- name: Determine Tini version
+  set_fact:
+    TINI_VERSION: v0.18.0
+    TINI_PKG: tini-amd64
+  when: RCD_ARCH=="amd64"
+
+- debug:
+    var: TINI_PKG
+
+- name: Install Tini
   get_url:
-    dest: /usr/bin/dumb-init
-    url: https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
+    dest: /usr/bin/tini
+    url: "https://github.com/krallin/tini/releases/download/{{ TINI_VERSION }}/{{ TINI_PKG }}"
     mode: 0775
     validate_certs: no
+
+
+#- name: Install dumb init
+#  get_url:
+#    dest: /usr/bin/dumb-init
+#    url: https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64
+#    mode: 0775
+#    validate_certs: no
 
 - name: Update apt-cache
   apt:

@@ -16,7 +16,7 @@ settings:
     environment: []   # List or mapping of environment variables
 #      RCD_ARCH: "{{ RCD_ARCH }}"
 
-  project_name: "rcdiana"
+  project_name: "rcdiana-amd64"
   deployment_output_path: ../ansible-deployment
 
 services:
@@ -24,24 +24,26 @@ services:
   dicom:
     from: "resin/{{ RCD_ARCH }}-debian:stretch"
     roles:
-      - sshd
+#      - sshd
       - orthanc
 
-    entrypoint: /usr/bin/dumb-init
+    entrypoint: ["/tini", "--"]
+    command:    ["/usr/sbin/Orthanc"]
     ports:
-      - 422:22
+#      - 422:22
       - 8042:8042
       - 4242:4242
 
   python:
     from: "resin/{{ RCD_ARCH }}-debian:stretch"
     roles:
-      - sshd
+#      - sshd
       - conda
 
-    entrypoint: /usr/bin/dumb-init
-    ports:
-      - 522:22
+    entrypoint: ["/tini", "--"]
+    command:    ["tail", "-f", "/dev/null"]
+#    ports:
+#      - 522:22
 
 registries:
   docker:

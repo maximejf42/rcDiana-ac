@@ -10,21 +10,16 @@ services:
     restart: always
     privileged: true
     ports:
-      - "422:22"
       - "4242:4242"
       - "8042:8042"
-    environment:
-      SYSTEMINIT: on
-    command: tail -f /dev/null
+#    environment:
+#      SYSTEMINIT: "on"
 
   python:
     image: rcdiana/python
 #    init: true
     restart: always
     privileged: true
-    ports:
-      - "522:22"
-    environment:
-      SYSTEMINIT: on
-    command: tail -f /dev/null
+#    environment:
+#      SYSTEMINIT: "on"
 
