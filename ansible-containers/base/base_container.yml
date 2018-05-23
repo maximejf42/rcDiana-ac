@@ -27,7 +27,7 @@ services:
 #      - sshd
       - orthanc
 
-    entrypoint: ["/tini", "--"]
+    entrypoint: ["/usr/bin/tini", "--"]
     command:    ["/usr/sbin/Orthanc"]
     ports:
 #      - 422:22
@@ -40,7 +40,7 @@ services:
 #      - sshd
       - conda
 
-    entrypoint: ["/tini", "--"]
+    entrypoint: ["/usr/bin/tini", "--"]
     command:    ["tail", "-f", "/dev/null"]
 #    ports:
 #      - 522:22
