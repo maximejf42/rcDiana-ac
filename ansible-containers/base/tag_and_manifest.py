@@ -1,5 +1,10 @@
 #! python
 
+# Note that for Resin.io compilation, you have to trick the arm compiler into pulling the arm64 image for the raspberry pi3, so add an entry for :armv7hf that is manifested as arch: arm64 variant: v8
+
+# Note that armv7hf is arch: arm, variant: v7, which makes sense but is poorly documented.  Acceptable architectures are listed here:
+# https://raw.githubusercontent.com/docker-library/official-images/a7ad3081aa5f51584653073424217e461b72670a/bashbrew/go/vendor/src/github.com/docker-library/go-dockerlibrary/architecture/oci-platform.go
+
 import yaml, logging
 from subprocess import call
 

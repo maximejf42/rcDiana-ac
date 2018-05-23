@@ -2,13 +2,13 @@ version: "2.0"
 
 services:
 
-  # a/c base name is "resin_amd64:stretch"
-  amd64_conductor:
-    build:
-      context: .
-      args:
-        RCD_ARCH: amd64
-    image: container-conductor-resin-amd64-stretch:0.9.3rc0
+#  # a/c base name is "resin_amd64:stretch"
+#  amd64_conductor:
+#    build:
+#      context: .
+#      args:
+#        RCD_ARCH: amd64
+#    image: container-conductor-resin-amd64-stretch:0.9.3rc0
 
   # a/c base name is "resin_armv7hf:stretch"
   armv7hf_conductor:

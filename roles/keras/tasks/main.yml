@@ -1,0 +1,35 @@
+---
+# tasks file for keras
+
+- name: Add system reqs
+  package:
+    name: build-essential
+    name: libopenblas-base  # Avail in conda on amd64, not on armv7hf
+    name: python2.7-dev
+
+- name: Add conda reqs
+  shell: conda install numpy scipy mkl-service pydot-ng h5py
+
+- name: Add pip reqs
+  name: parameterized
+  extra_args: "--no-cache-dir --ignore-installed --upgrade"
+
+# Need to be added to env...
+- set_facts:
+    KERAS_VERSION: 2.1.4
+    KERAS_BACKEND: tensorflow
+    MKL_THREADING_LAYER: GNU
+
+- pip:
+    name: git+https://github.com/fchollet/keras.git@${KERAS_VERSION}
+    extra_args: "--no-cache-dir --ignore-installed --upgrade --no-dependencies"
+
+- name: quick test and dump package lists
+  shell: >
+     python -c "import tensorflow; print(tensorflow.__version__)"
+     && dpkg-query -l > /dpkg-query-l.txt
+     && pip freeze > /pip-freeze.txt
+  register: result
+
+- debug:
+    var: result
