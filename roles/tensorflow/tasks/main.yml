@@ -1,10 +1,29 @@
 ---
 # tasks file for tensorflow
 
-- set_facts:
-    TENSORFLOW_VERSION: 1.5.0
-    TENSORFLOW_DEVICE: cpu
+- set_fact:
+    TENSORFLOW_VERSION: "1.5.0"
+    TENSORFLOW_DEVICE: "cpu"
 
-- pip: Install TF
-    name: "https://storage.googleapis.com/tensorflow/linux/{{ TENSORFLOW_DEVICE }}/tensorflow-{{ TENSORFLOW_VERSION }}-cp27-none-linux_x86_64.whl"
+- set_fact:
+    TF_PKG: "https://storage.googleapis.com/tensorflow/linux/{{TENSORFLOW_DEVICE}}/tensorflow-{{TENSORFLOW_VERSION}}-cp27-none-linux_x86_64.whl"
+  when: RCD_ARCH=="amd64"
+
+- set_fact:
+    TF_PKG: "https://github.com/samjabrahams/tensorflow-on-raspberry-pi/releases/download/v1.1.0/tensorflow-1.1.0-cp27-none-linux_armv7l.whl"
+  when: RCD_ARCH=="armv7hf"
+
+- pip:
+    name:
+      - "{{TF_PKG}}"
     extra_args: "--no-cache-dir --ignore-installed --upgrade"
+    executable: /opt/conda/bin/pip
+
+- pip:
+    name: mock
+    state: absent
+    executable: /opt/conda/bin/pip
+
+- pip:
+    name: mock
+    executable: /opt/conda/bin/pip

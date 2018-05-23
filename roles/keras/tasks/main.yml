@@ -6,29 +6,41 @@
     name: build-essential
     name: libopenblas-base  # Avail in conda on amd64, not on armv7hf
     name: python2.7-dev
+    name: git
 
 - name: Add conda reqs
-  shell: conda install numpy scipy mkl-service pydot-ng h5py
+  shell: /opt/conda/bin/conda install numpy scipy mkl-service pydot-ng h5py pyyaml PIL
 
 - name: Add pip reqs
-  name: parameterized
-  extra_args: "--no-cache-dir --ignore-installed --upgrade"
+  pip:
+    name:
+      - parameterized
+      - pydicom
+    extra_args: "--no-cache-dir --ignore-installed --upgrade"
+    executable: /opt/conda/bin/pip
 
 # Need to be added to env...
-- set_facts:
-    KERAS_VERSION: 2.1.4
+- set_fact:
+    KERAS_VERSION: "2.1.4"
     KERAS_BACKEND: tensorflow
-    MKL_THREADING_LAYER: GNU
 
+- name: Add Keras environment variables
+  lineinfile:
+    name: ~/.bashrc
+    line: "export KERAS_BACKEND={{KERAS_BACKEND}} MKL_THREADING_LAYER=GNU PYTHONWARNINGS=ignore"
+    create: true
+
+export
 - pip:
-    name: git+https://github.com/fchollet/keras.git@${KERAS_VERSION}
+    name: "git+https://github.com/fchollet/keras.git@{{KERAS_VERSION}}"
     extra_args: "--no-cache-dir --ignore-installed --upgrade --no-dependencies"
+    executable: /opt/conda/bin/pip
 
 - name: quick test and dump package lists
-  shell: >
-     python -c "import tensorflow; print(tensorflow.__version__)"
-     && dpkg-query -l > /dpkg-query-l.txt
-     && pip freeze > /pip-freeze.txt
+  shell:
+    'python -c "import {{ KERAS_BACKEND }}; print({{ KERAS_BACKEND }}.__version__)" \
+     && dpkg-query -l > /dpkg-query-l.txt \
+     && pip freeze > /pip-freeze.txt' \
   register: result
 
 - debug:
