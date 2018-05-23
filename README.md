@@ -5,7 +5,7 @@ Brown University and Rhode Island Hospital
 Spring 2018
 
 Source: <http://github.com/derekmerck/rcdiana-ac>  
-Docker Hub: <https://hub.docker.com/r/rcdiana/>
+Docker Hub: <https://hub.docker.com/u/rcdiana/>
 
 
 Overview
@@ -25,8 +25,8 @@ rcDIANA is based on Debian stretch, and provides multiarchitecture docker servic
 
 - dicom  - vanilla [Orthanc][] ports: 4242 (DICOM), 8042 (http)
 - python - base [Conda][] Python 2.7 installation
-- learn  - extends python with [TensorFlow][] and [Keras][] _in progress_
-- sshd   - sshd server for remote access
+- learn  - extends python with [TensorFlow][] and [Keras][] _amd64 only for now_
+- sshd   - sshd server for remote access _broken_
 
 Because armv7hf is no longer supported by Continuum as of 2015, rcDiana uses [BerryConda][].
 
@@ -49,6 +49,7 @@ Or
 
 ```bash
 $ docker run rcdiana/dicom -p "80:8040"
+$ docker run -it rcdiana/learn /bin/bash 
 ```
 
 Or push the repo to an Intel or [Raspberry Pi 3][] Resin.io repository for automated rollout using `docker-compose`.
@@ -97,7 +98,7 @@ The base images respect 3 built-in environment variables:
 Notes
 -----------------
 
-Kill all running docker containers if needed.
+Kill all running docker containers if needed:
 
 ```bash
 $ docker stop $(docker ps -aq)
