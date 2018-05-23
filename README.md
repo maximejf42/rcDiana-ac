@@ -1,6 +1,6 @@
 rcDiana AC
 ==================
-Derek Merck <derek_merck@brown.edu>
+Derek Merck <derek_merck@brown.edu>  
 Brown University and Rhode Island Hospital  
 Spring 2018
 
@@ -11,7 +11,7 @@ Docker Hub: <https://hub.docker.com/u/rcdiana/>
 Overview
 ---------------
 
-A remotely configured [DIANA][] service stack, suitable for multi-architecture use with [resin.io][].  Implemented with `[ansible-container][]`.
+A remotely configured [DIANA][] service stack, suitable for multi-architecture use with [resin.io][].  Implemented with [ansible-container][].
 
 [DIANA]: https://diana.readthedocs.io
 [ansible-container]: https://docs.ansible.com/ansible-container/
@@ -23,7 +23,7 @@ Services
 
 rcDIANA is based on Debian stretch, and provides multiarchitecture docker service containers for amd64 (Intel), armv7hf (Raspberry Pi 3).  _Support for aarch64 (Jetson TX2) is in progress_.
 
-- dicom  - vanilla [Orthanc][] ports: 4242 (DICOM), 8042 (http)
+- dicom  - vanilla [Orthanc][] - uses ports: 4242 (DICOM), 8042 (http)
 - python - base [Conda][] Python 2.7 installation
 - learn  - extends python with [TensorFlow][] and [Keras][] _amd64 only for now_
 - sshd   - sshd server for remote access _broken_
