@@ -5,23 +5,21 @@ version: '2.1'
 services:
 
   dicom:
-    image: rcdiana/dicom:amd64
+    image: rcdiana/dicom
 #    init: true
     restart: always
     privileged: true
     ports:
       - "4242:4242"
       - "8042:8042"
-    entrypoint: ["/usr/bin/tini", "--"]
 #    environment:
 #      SYSTEMINIT: "on"
 
   python:
-    image: rcdiana/python:amd64
+    image: rcdiana/python
 #    init: true
     restart: always
     privileged: true
-    entrypoint: ["/usr/bin/tini", "--"]
 #    environment:
 #      SYSTEMINIT: "on"
 

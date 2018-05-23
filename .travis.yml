@@ -40,7 +40,7 @@ jobs:
 
         # Build containers
         - cd $TRAVIS_BUILD_DIR/ansible-containers/base
-        - ansible-container --config-file base-container.yml build
+        - ansible-container build
 
         - python tag_and_manifest.py
 
