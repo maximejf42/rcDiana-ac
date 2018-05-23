@@ -6,7 +6,7 @@ version: '2.1'
 services:
 
   dicom:
-    image: rcdiana/dicom:armv7hf
+    image: rcdiana/dicom
     restart: always
     privileged: true
     ports:
@@ -14,7 +14,7 @@ services:
       - "80:8042"  # Putting this on 80 makes it publishable on Resin
 
   python:
-    image: rcdiana/python:armv7hf
+    image: rcdiana/python
     restart: always
     privileged: true
 
