@@ -12,16 +12,14 @@ env:
 
 jobs:
   include:
-    - script:
-      # Login to docker for push
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
     - stage:
         if: env(BUILD_CONDUCTORS)
         name: build_conductors
         script:
-          - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors
-          - docker-compose build
+          - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
+
+          # Login to docker for push
+          - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
           # Push conductors for reference
           - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
@@ -39,8 +37,11 @@ jobs:
         - docker tag rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0 container-conductor-resin-amd64-stretch:0.9.3rc0
 
         # Build containers
-        - cd $TRAVIS_BUILD_DIR/ansible-containers/base
-        - ansible-container build
+        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && ansible-container build
 
-        - python tag_and_manifest.py
+                # Login to docker for push
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && python tag_and_manifest.py
+
+
 
