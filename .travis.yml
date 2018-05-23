@@ -8,7 +8,7 @@ services:
   - docker
 
 env:
-  BUILD_CONDUCTORS: false
+  BUILD_CONDUCTORS: true
   BUILD_AMD64: true
   BUILD_ARMV7HF: false
 
@@ -24,8 +24,8 @@ jobs:
           - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
           # Push conductors for reference
-          - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-          - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+#          - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+#          - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
 
           - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
           - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0

@@ -1,22 +1,22 @@
 version: "2"
 
 defaults:
-  RCD_ARCH: "amd64"
-#  RCD_ARCH: "armv7hf"
+#  RCD_ARCH: "amd64"
+  RCD_ARCH: "armv7hf"
   ROOT_PASSWORD: D1ana!
 
 settings:
 
   conductor:
     # defaults vars don't work in here, update archicture in base and project
-    base: "resin-amd64:stretch"
+    base: "resin-armv7hf:stretch"
     roles_path:
       - ../../roles   # Specify a local path containing Ansible roles
     # volumes:        # Provide a list of volumes to mount
     environment: []   # List or mapping of environment variables
 #      RCD_ARCH: "{{ RCD_ARCH }}"
 
-  project_name: "rcdiana-amd64"
+  project_name: "rcdiana-armv7hf"
   deployment_output_path: ../ansible-deployment
 
 services:
@@ -24,26 +24,21 @@ services:
   dicom:
     from: "resin/{{ RCD_ARCH }}-debian:stretch"
     roles:
-#      - sshd
       - orthanc
 
     entrypoint: ["/usr/bin/tini", "--"]
     command:    ["/usr/sbin/Orthanc"]
     ports:
-#      - 422:22
       - 8042:8042
       - 4242:4242
 
   python:
     from: "resin/{{ RCD_ARCH }}-debian:stretch"
     roles:
-#      - sshd
       - conda
 
     entrypoint: ["/usr/bin/tini", "--"]
     command:    ["tail", "-f", "/dev/null"]
-#    ports:
-#      - 522:22
 
 registries:
   docker:
