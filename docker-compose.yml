@@ -5,7 +5,7 @@ version: '2.1'
 services:
 
   dicom:
-    image: rcdiana/dicom
+    image: rcdiana/dicom:amd64
 #    init: true
     restart: always
     privileged: true
@@ -16,7 +16,7 @@ services:
 #      SYSTEMINIT: "on"
 
   python:
-    image: rcdiana/python
+    image: rcdiana/python:amd64
 #    init: true
     restart: always
     privileged: true
