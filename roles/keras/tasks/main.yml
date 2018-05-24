@@ -36,8 +36,15 @@
 - name: Add Keras environment variables
   lineinfile:
     name: ~/.bashrc
-    line: "export KERAS_BACKEND={{KERAS_BACKEND}} MKL_THREADING_LAYER=GNU PYTHONWARNINGS=ignore"
+    line: "export KERAS_BACKEND={{KERAS_BACKEND}} PYTHONWARNINGS=ignore"
     create: true
+
+- name: Add Keras MKL environment var
+  lineinfile:
+    name: ~/.bashrc
+    line: "export MKL_THREADING_LAYER=GNU"
+    create: true
+  when: RCD_ARCH=="amd64"
 
 - pip:
     name: "git+https://github.com/fchollet/keras.git@{{KERAS_VERSION}}"
@@ -49,3 +56,7 @@
     '/opt/conda/bin/python -W ignore -c "import {{ KERAS_BACKEND }}; print({{ KERAS_BACKEND }}.__version__)" \
      && dpkg-query -l \
      && /opt/conda/bin/pip freeze'
+  register: result
+
+- debug:
+    var: result

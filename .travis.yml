@@ -7,9 +7,9 @@ python:
 services:
   - docker
 
-env:
+#env:
 #  BUILD_CONDUCTORS: true
-  RCD_ARCH: amd64
+#  RCD_ARCH: amd64
 
 before_install:
 - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
@@ -18,10 +18,6 @@ before_install:
 install:
 - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
 - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
-
-# Get working conductor
-- docker pull rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-- docker tag rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0 container-conductor-resin-amd64-stretch:0.9.3rc0
 
 # Collect info
 - docker version
@@ -33,15 +29,34 @@ script:
 # Build it
 - cd ansible-containers/base
 - pwd
-#- sed -i "/s/armv7hf/$RCD_ARCH/" container.yml  # Replace any leftover wrong arch's
+
+# Build amd64 containers
+- export RCD_ARCH=amd64
+
+# Get working conductor
+- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+
+- sed -E "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
 - ansible-container build
 
-# Run it
-- ansible-container run
-- docker ps -a
-- docker images
-- ansible-container stop -f
+# Build armv7hf containers
+- export RCD_ARCH=armv7hf
 
+# Get working conductor
+- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+
+- sed -E "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+- ansible-container build
+
+## Run it
+#- ansible-container run
+#- docker ps -a
+#- docker images
+#- ansible-container stop -f
+
+# Only want to do this _once_ at the end
 # Login to docker, retag, manifest, and push
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - python tag_and_manifest.py

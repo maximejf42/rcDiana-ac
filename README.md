@@ -84,6 +84,9 @@ $ ansible-container --config-file base_container.yml build
 $ python tag_and_manifest.py rcdiana rcd-manifest.yml
 ```
 
+Update builds are automated with [Travis CI][].  Multi-archicture cross-compiling is done using [qemu-user-static](https://github.com/multiarch/qemu-user-static) embedded in the resin base images.  See this post for details: <https://blog.hypriot.com/post/setup-simple-ci-pipeline-for-arm-images/>
+
+[Travis CI]: https://travis-ci.org
 
 Configuration
 ------------------
@@ -96,25 +99,11 @@ The base images respect 3 built-in environment variables:
 - `ORTHANC_PASSWORD` (default: 0rthanC!)
 - `ROOT_PASSWORD` (default: passw0rd!)
 
+### Conda for armv7hf
 
-Notes
------------------
+To build the `conda` image with a different Conda distribution, such as Continuum's Python 2.7.10 armv7 release, override the environment variable `CONDA_PKG` to the appropriate download location at build-time.  
 
-Kill all running docker containers if needed:
-
-```bash
-$ docker stop $(docker ps -aq)
-```
-
-Broken during refactoring:
-
-Update builds are automated with [Travis CI][].  Multi-archicture cross-compiling is done using [qemu-user-static](https://github.com/multiarch/qemu-user-static) following this post: <https://blog.hypriot.com/post/setup-simple-ci-pipeline-for-arm-images/>
-
-[Travis CI]: https://travis-ci.org
-
-To build the `conda` image with a different Conda distribution, such as Continuum's Python 2.7.10 armv7 release, override the environment variable `CONDA_PKG` to the appropriate download location at build-time.
-
-The most recent Continuum miniconda can be found at <https://repo.continuum.io/miniconda/Miniconda-3.16.0-Linux-armv7l.sh>
+The most recent (outdated) Continuum miniconda for armv7hf can be found at <https://repo.continuum.io/miniconda/Miniconda-3.16.0-Linux-armv7l.sh>
 
 
 ### Compiling Conda for aarch64
@@ -123,6 +112,15 @@ The most recent Continuum miniconda can be found at <https://repo.continuum.io/m
 $ mkdir /tmp/pkg
 $ docker build -t pkg ./conda_aarch64_pkg
 $ docker run -it -v "/tmp/pkg:/host/pkg" pkg
+```
+
+Notes
+-----------------
+
+Kill all running docker containers if needed:
+
+```bash
+$ docker stop $(docker ps -aq)
 ```
 
 ## License

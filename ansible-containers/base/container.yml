@@ -55,7 +55,7 @@ services:
     from: "rcdiana-{{ RCD_ARCH }}-python:latest"
     roles:
       - keras
-      # Use "from:conda" and removed core dependencies on common and conda roles
+      # Use "from:conda"/dep python and removed role dependencies on common and conda
 
     depends_on:
       - python
