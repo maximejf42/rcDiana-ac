@@ -58,7 +58,7 @@ Or push the repo to an Intel or [Raspberry Pi 3][] Resin.io repository for autom
 Building
 --------------------
 
-1. Build cross-compiling `ansible-container` conductor images from Resin.io base images.
+1. Get a conductor image.  Working conductor images can also be pulled from the rcdiana namespace on Docker Hub, but need to be retagged as local or ansible-container will not find them.  You can also build your own conductors by cross-compiling a conductor configuration using Resin.io base images.
 
 ```bash
 $ cd ansible-containers/conductors
@@ -67,18 +67,17 @@ $ docker-compose build
 
 This provides conductor images tagged to be used with Resin.io's standard [base images](https://docs.resin.io/reference/base-images/resin-base-images/) named `resin-amd64-debian:stretch` and `resin-armv7hf-debian:stretch`.  The armv7hf compilation of crypto, etc. can take a _long_ time.
 
-Working conductor images can also be pulled from the rcdiana namespace on Docker Hub, but need to be retagged as local or ansible-container will not find them.
+2.  Build Diana base services from roles.
 
-Build Diana base services from roles.
 ```bash
 $ cd ansible-containers/base
-$ ansible-container --config-file base_container.yml build
+$ ansible-container build
 ```
 
-`ansible-container` does not have an easily scripted tagging function, so the images all need to be retagged appropriately, manifested for multiarchitecture pulls, and pushed to a thge correct namespace with another script.
+3. Push them to your namespace.  Because ansible-container does not have an easily scripted tagging function, the images can be retagged, manifested for multiarchitecture pulls, and pushed to a the correct namespace with another script, `manifest-it.py`.  The manifest format is based on the `manifest.yml` format described at <https://github.com/estesp/manifest-tool>
 
 ```bash
-$ python tag_and_manifest.py rcdiana rcd-manifest.yml
+$ python manifest-it.py rcd-manifest.yml
 ```
 
 Update builds are automated with [Travis CI][].  Multi-archicture cross-compiling is done using [qemu-user-static](https://github.com/multiarch/qemu-user-static) embedded in the resin base images.  See this post for details: <https://blog.hypriot.com/post/setup-simple-ci-pipeline-for-arm-images/>

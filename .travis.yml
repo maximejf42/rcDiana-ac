@@ -7,51 +7,59 @@ python:
 services:
   - docker
 
-#env:
-#  BUILD_CONDUCTORS: true
-#  RCD_ARCH: amd64
+jobs:
+  include:
+    - stage: Setup environment
+      script:
 
-before_install:
-  - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
-  - sudo apt-get update -qq
+        - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
+        - sudo apt-get update -qq
 
-  - docker --version
-  - docker info
+        - docker --version
 
-  # Add docker edge
+        # Add docker edge
+        - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+        - sudo apt-get update
+        - sudo apt-get -y install docker-ce
 
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
-  - sudo apt-get update
-  - sudo apt-get -y install docker-ce
+        - docker --version
 
-  - docker --version
-  - docker info
+        # Setup docker experimental
+        - echo '{"experimental":"enabled"}' > config.json
 
-  # Turn on docker experimental
-  - echo '{"experimental":"enabled"}' > config.json
+        - docker --version
+        - docker-compose version
 
-  - docker --config . --version
-  - docker info
+        # Setup Ansible-Container
+        - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
+        - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
-  - docker manifest
-#
-#install:
-#- pip install https://github.com/ansible/ansible/archive/devel.tar.gz
-#- pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
-#
-## Collect info
-#- docker version
-#- docker-compose version
-#- docker info
-#
-script:
+    - stage: Setup environment
 
-# Build it
-  - cd ansible-containers/base
-  - pwd
-#
-#- echo '{"experimental":true}' > docker.json
-#- docker --config docker.json manifest
+      env:
+        RCD_ARCH: amd64
+        RCD_ARCH: armv7hf
+
+      script:
+
+          # Build it
+        - cd ansible-containers/base
+        - pwd
+
+        - echo $RCD_ARCH
+
+    - stage: deploy
+      script:
+
+        # Only want to do this _once_ at the end
+
+        # Login to docker, retag, manifest, and push
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+        # Need to put docker on experimental to have access to manifest...
+        - python manifest-it.py -m -d rcd-manifests.yml
+
+
 
 #
 ## Build amd64 containers
@@ -79,13 +87,8 @@ script:
 ##- docker ps -a
 ##- docker images
 ##- ansible-container stop -f
-#
-## Only want to do this _once_ at the end
-## Login to docker, retag, manifest, and push
-#
-## Need to put docker on experimental to have access to manifest...
-#- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#- python tag_and_manifest.py
+
+
 
 #jobs:
 #  include:
@@ -105,15 +108,3 @@ script:
 #          - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
 #          - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
 #
-#    - stage:
-#      if: env(BUILD_AMD64)
-#      name: build_amd64
-#      script:
-#
-#        # Build containers
-#        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && ansible-container build
-#
-#        # Login to docker for push
-#        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && python tag_and_manifest.py
-
