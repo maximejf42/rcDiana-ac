@@ -1,4 +1,4 @@
-# rcDiana sample builder
+# rcDiana simple service setup
 
 # rcdiana is multiarch, so this is typically sufficient for a manual install
 # on either amd64 (intel) or armc7hf (raspberry pi)
@@ -11,7 +11,7 @@ version: '2.1'
 services:
 
   dicom:
-    image: rcdiana/dicom
+    image: rcdiana/dicom:armv7h
     restart: always
     privileged: true
     ports:
@@ -19,7 +19,7 @@ services:
       - "80:8042"  # Putting this on 80 makes it publishable on Resin
 
   learn:
-    image: rcdiana/learn
+    image: rcdiana/learn:armv7h
     restart: always
     privileged: true
     links:
