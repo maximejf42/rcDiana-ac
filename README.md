@@ -7,6 +7,7 @@ Spring 2018
 Source: <http://github.com/derekmerck/rcdiana-ac>  
 Docker Hub: <https://hub.docker.com/u/rcdiana/>
 
+[![Build Status](https://travis-ci.org/derekmerck/rcDiana-ac.svg?branch=master)](https://travis-ci.org/derekmerck/rcDiana-ac)
 
 Overview
 ---------------
@@ -27,10 +28,6 @@ rcDIANA is based on Debian stretch, and provides multiarchitecture docker servic
 - python - base [Conda][] Python 2.7 installation
 - learn  - extends python with [TensorFlow][] and [Keras][] _amd64 only for now_
 - sshd   - sshd server for remote access
-
-Because armv7hf is no longer supported by Continuum as of 2015, rcDiana uses [BerryConda][].
-
-http://ci.tensorflow.org/view/Nightly/job/nightly-pi/lastSuccessfulBuild/
 
 [Orthanc]: http://www.orthanc-server.com
 [Conda]: http://www.anaconda.org
@@ -91,7 +88,7 @@ Update builds are automated with [Travis CI][].  Multi-archicture cross-compilin
 Configuration
 ------------------
 
-Broken during refactoring:
+_Broken during refactoring_
 
 The base images respect 3 built-in environment variables:
 
@@ -101,9 +98,13 @@ The base images respect 3 built-in environment variables:
 
 ### Conda for armv7hf
 
+Because armv7hf is no longer supported by Continuum as of 2015, rcDiana uses [BerryConda][].
+
 To build the `conda` image with a different Conda distribution, such as Continuum's Python 2.7.10 armv7l release, override the environment variable `CONDA_PKG` to the appropriate download location at build-time.  
 
-The most recent (outdated) Continuum miniconda for armv7hf can be found at <https://repo.continuum.io/miniconda/Miniconda-3.16.0-Linux-armv7l.sh>
+The most recent (but quite outdated) Continuum miniconda for armv7hf can be found at: <https://repo.continuum.io/miniconda/Miniconda-3.16.0-Linux-armv7l.sh>
+
+A recent passing build of tensorflow for armv7hf can be found at: <http://ci.tensorflow.org/view/Nightly/job/nightly-pi/lastSuccessfulBuild/>
 
 ### Compiling Conda for aarch64
 

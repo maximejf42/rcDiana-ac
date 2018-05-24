@@ -16,8 +16,10 @@ before_install:
 - sudo apt-get update -qq
 
 # Turn on docker experimental
-- echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-- sudo service docker restart
+# - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+# - sudo service docker restart
+# Turn on docker experimental for the CLI
+- echo '{"experimental":true}' > ~/.docker/config.json
 
 install:
 - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
@@ -34,38 +36,42 @@ script:
 - cd ansible-containers/base
 - pwd
 
-# Build amd64 containers
-- export RCD_ARCH=amd64
-
-# Get working conductor
-- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-
-- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
-- ansible-container build
-
-# Build armv7hf containers
-- export RCD_ARCH=armv7hf
-
-# Get working conductor
-- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-
-- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
-- ansible-container build
-
-## Run it
-#- ansible-container run
-#- docker ps -a
-#- docker images
-#- ansible-container stop -f
-
-# Only want to do this _once_ at the end
-# Login to docker, retag, manifest, and push
-
-# TODO: Need to put docker on experimental to have access to manifest...
+# Need to put docker on experimental to have access to manifest...
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - python tag_and_manifest.py
+#
+## Build amd64 containers
+#- export RCD_ARCH=amd64
+#
+## Get working conductor
+#- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#
+#- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+#- ansible-container build
+#
+## Build armv7hf containers
+#- export RCD_ARCH=armv7hf
+#
+## Get working conductor
+#- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#
+#- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+#- ansible-container build
+#
+### Run it
+##- ansible-container run
+##- docker ps -a
+##- docker images
+##- ansible-container stop -f
+#
+## Only want to do this _once_ at the end
+## Login to docker, retag, manifest, and push
+#
+## Need to put docker on experimental to have access to manifest...
+#- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#- python tag_and_manifest.py
 
 #jobs:
 #  include:
