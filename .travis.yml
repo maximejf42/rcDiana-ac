@@ -15,28 +15,42 @@ before_install:
 - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
 - sudo apt-get update -qq
 
-# Turn on docker experimental
-# - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-# - sudo service docker restart
-# Turn on docker experimental for the CLI
-
-install:
-- pip install https://github.com/ansible/ansible/archive/devel.tar.gz
-- pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
-
-# Collect info
-- docker version
-- docker-compose version
+- docker --version
 - docker info
 
-script:
+- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+- sudo apt-get update
+- sudo apt-get -y install docker-ce=17.05.0~ce-0~ubuntu-trusty
 
-# Build it
-- cd ansible-containers/base
-- pwd
+- docker --version
+- docker info
 
-- echo '{"experimental":true}' > docker.json
-- docker --config docker.json manifest
+# Turn on docker experimental
+ - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+ - sudo service docker restart
+
+- docker --version
+- docker info
+
+- docker manifest
+#
+#install:
+#- pip install https://github.com/ansible/ansible/archive/devel.tar.gz
+#- pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
+#
+## Collect info
+#- docker version
+#- docker-compose version
+#- docker info
+#
+#script:
+#
+## Build it
+#- cd ansible-containers/base
+#- pwd
+#
+#- echo '{"experimental":true}' > docker.json
+#- docker --config docker.json manifest
 
 #
 ## Build amd64 containers
