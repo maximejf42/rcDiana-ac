@@ -30,7 +30,6 @@
     executable: /opt/conda/bin/pip
 
 - set_fact:
-    KERAS_VERSION: "2.1.4"
     KERAS_BACKEND: tensorflow
 
 - name: Add Keras environment variables
@@ -47,7 +46,7 @@
   when: RCD_ARCH=="amd64"
 
 - pip:
-    name: "git+https://github.com/fchollet/keras.git@{{KERAS_VERSION}}"
+    name: "keras"
     extra_args: "--no-cache-dir --ignore-installed"  #  --no-dependencies
     executable: /opt/conda/bin/pip
 

@@ -28,7 +28,7 @@ before_install:
   - docker info
 
   # Turn on docker experimental
-  - echo '{"experimental":true}' > config.json
+  - echo '{"experimental":"enabled"}' > config.json
 
   - docker --config . --version
   - docker --config . info
