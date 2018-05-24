@@ -20,6 +20,9 @@ install:
   - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
   - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
+  # Register qemu as cross-compiler
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+
 #after_install:
 #  # build conductors
 #  - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
