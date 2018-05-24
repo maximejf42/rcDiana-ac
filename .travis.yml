@@ -3,7 +3,6 @@ dist: trusty
 language: python
 python:
   - "3.6"
-
 services:
   - docker
 
@@ -21,12 +20,26 @@ install:
   - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
   - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
-before_script:
+#after_install:
+#  # build conductors
+#  - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
+#
+#  # Login to docker for push
+#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#
+#  # Push conductors for reference
+#  - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+#  - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+#
+#  - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
+#  - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
 
+before_script:
+  # Build containers
   - cd ansible-containers/base
   - pwd
 
-  - export $RCD_ARCH=amd64
+  - export RCD_ARCH=amd64
   - echo $RCD_ARCH
   ## Get working conductor for arch
   - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
@@ -35,7 +48,7 @@ before_script:
   - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
   - ansible-container build
 
-  - export $RCD_ARCH=armv7hf
+  - export RCD_ARCH=armv7hf
   - echo $RCD_ARCH
 
   # Get working conductor for arch
@@ -50,8 +63,7 @@ script: true
 after_script:
   # Login to docker, retag, manifest, and push
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-  # Need to put docker on experimental to have access to manifest...
+  # -m mocks docker into experimental to have access to manifest
   - python manifest-it.py -m rcd-manifests.yml
 
 
@@ -63,21 +75,4 @@ after_script:
 
 
 
-#jobs:
-#  include:
-#    - stage:
-#        if: env(BUILD_CONDUCTORS)
-#        name: build_conductors
-#        script:
-#          - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
-#
-#          # Login to docker for push
-#          - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#
-#          # Push conductors for reference
-##          - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-##          - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-#
-#          - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
-#          - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
-#
+
