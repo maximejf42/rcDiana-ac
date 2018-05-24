@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 language: python
 python:
-    - "3.6"
+  - "3.6"
 
 services:
   - docker
@@ -12,27 +12,28 @@ services:
 #  RCD_ARCH: amd64
 
 before_install:
-- sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
-- sudo apt-get update -qq
+  - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
+  - sudo apt-get update -qq
 
-- docker --version
-- docker info
+  - docker --version
+  - docker info
 
-- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
-- sudo apt-get update
-- sudo apt-get -y install docker-ce=17.05.0~ce-0~ubuntu-trusty
+  # Add docker edge
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce=17.05.0~ce-0~ubuntu-trusty
 
-- docker --version
-- docker info
+  - docker --version
+  - docker info
 
-# Turn on docker experimental
- - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
- - sudo service docker restart
+  # Turn on docker experimental
+  - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+  - sudo service docker restart
 
-- docker --version
-- docker info
+  - docker --version
+  - docker info
 
-- docker manifest
+  - docker manifest
 #
 #install:
 #- pip install https://github.com/ansible/ansible/archive/devel.tar.gz
@@ -43,11 +44,11 @@ before_install:
 #- docker-compose version
 #- docker info
 #
-#script:
-#
-## Build it
-#- cd ansible-containers/base
-#- pwd
+script:
+
+# Build it
+  - cd ansible-containers/base
+  - pwd
 #
 #- echo '{"experimental":true}' > docker.json
 #- docker --config docker.json manifest
