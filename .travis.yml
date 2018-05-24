@@ -8,42 +8,75 @@ services:
   - docker
 
 env:
-  BUILD_CONDUCTORS: true
-  BUILD_AMD64: true
-  BUILD_ARMV7HF: false
+#  BUILD_CONDUCTORS: true
+  RCD_ARCH: amd64
 
-jobs:
-  include:
-    - stage:
-        if: env(BUILD_CONDUCTORS)
-        name: build_conductors
-        script:
-          - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
+before_install:
+- sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
+- sudo apt-get update -qq
 
-          # Login to docker for push
-          - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+install:
+- pip install https://github.com/ansible/ansible/archive/devel.tar.gz
+- pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
-          # Push conductors for reference
-#          - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-#          - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+script:
 
-          - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
-          - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
+# Collect info
+- docker version
+- docker-compose version
+- docker info
 
-    - stage:
-      if: env(BUILD_AMD64)
-      name: build_amd64
-      script:
-        # Setup conductor
-        - docker pull rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-        - docker tag rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0 container-conductor-resin-amd64-stretch:0.9.3rc0
+# Build it
+- cd ansible-container/base
+- pwd
+#- sed -i "/s/armv7hf/$RCD_ARCH/" container.yml  # Replace any leftover wrong arch's
+- ansible-container build
 
-        # Build containers
-        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && ansible-container build
+# Run it
+- ansible-container run
+- docker ps -a
+- docker images
+- ansible-container stop -f
 
-                # Login to docker for push
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && python tag_and_manifest.py
+# Tag and push
 
+# Login to docker for push
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- python tag_and_manifest.py
 
 
+#jobs:
+#  include:
+#    - stage:
+#        if: env(BUILD_CONDUCTORS)
+#        name: build_conductors
+#        script:
+#          - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
+#
+#          # Login to docker for push
+#          - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#
+#          # Push conductors for reference
+##          - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+##          - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+#
+#          - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
+#          - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
+#
+#    - stage:
+#      if: env(BUILD_AMD64)
+#      name: build_amd64
+#      script:
+#        # Setup conductor
+#        - docker pull rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+#        - docker tag rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0 container-conductor-resin-amd64-stretch:0.9.3rc0
+#
+#        # Build containers
+#        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && ansible-container build
+#
+#        # Login to docker for push
+#        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && python tag_and_manifest.py
+#
+#
+#

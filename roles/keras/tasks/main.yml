@@ -1,25 +1,33 @@
 ---
 # tasks file for keras
 
+# These should already be present from tensorflow role dep
 - name: Add system reqs
   package:
-    name: build-essential
-    name: libopenblas-base  # Avail in conda on amd64, not on armv7hf
-    name: python2.7-dev
-    name: git
+    name:
+      - build-essential
+#      - libopenblas-base  # In conda as numpy dep in both conda and berryconda
+      - python2.7-dev
+    install_recommends: no
+    autoclean: yes
 
 - name: Add conda reqs
-  shell: /opt/conda/bin/conda install numpy scipy mkl-service pydot-ng h5py pyyaml PIL
+  shell: /opt/conda/bin/conda install -y numpy scipy h5py pyyaml pillow
+
+# Intel math kernel library, only amd64
+- name: Add math kernel library for amd64
+  shell: /opt/conda/bin/conda install -y mkl-service
+  when: RCD_ARCH=="amd64"
 
 - name: Add pip reqs
   pip:
     name:
       - parameterized
       - pydicom
-    extra_args: "--no-cache-dir --ignore-installed --upgrade"
+      - ruamel.yaml  # gets rid of a warning about ordereddict
+    extra_args: "--no-cache-dir"
     executable: /opt/conda/bin/pip
 
-# Need to be added to env...
 - set_fact:
     KERAS_VERSION: "2.1.4"
     KERAS_BACKEND: tensorflow
@@ -30,18 +38,13 @@
     line: "export KERAS_BACKEND={{KERAS_BACKEND}} MKL_THREADING_LAYER=GNU PYTHONWARNINGS=ignore"
     create: true
 
-export
 - pip:
     name: "git+https://github.com/fchollet/keras.git@{{KERAS_VERSION}}"
-    extra_args: "--no-cache-dir --ignore-installed --upgrade --no-dependencies"
+    extra_args: "--no-cache-dir --ignore-installed"  #  --no-dependencies
     executable: /opt/conda/bin/pip
 
-- name: quick test and dump package lists
+- name: Test and print package lists
   shell:
-    'python -c "import {{ KERAS_BACKEND }}; print({{ KERAS_BACKEND }}.__version__)" \
-     && dpkg-query -l > /dpkg-query-l.txt \
-     && pip freeze > /pip-freeze.txt' \
-  register: result
-
-- debug:
-    var: result
+    '/opt/conda/bin/python -W ignore -c "import {{ KERAS_BACKEND }}; print({{ KERAS_BACKEND }}.__version__)" \
+     && dpkg-query -l \
+     && /opt/conda/bin/pip freeze'

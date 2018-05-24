@@ -26,9 +26,11 @@ rcDIANA is based on Debian stretch, and provides multiarchitecture docker servic
 - dicom  - vanilla [Orthanc][] - uses ports: 4242 (DICOM), 8042 (http)
 - python - base [Conda][] Python 2.7 installation
 - learn  - extends python with [TensorFlow][] and [Keras][] _amd64 only for now_
-- sshd   - sshd server for remote access _broken_
+- sshd   - sshd server for remote access
 
 Because armv7hf is no longer supported by Continuum as of 2015, rcDiana uses [BerryConda][].
+
+http://ci.tensorflow.org/view/Nightly/job/nightly-pi/lastSuccessfulBuild/
 
 [Orthanc]: http://www.orthanc-server.com
 [Conda]: http://www.anaconda.org

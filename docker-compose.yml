@@ -1,5 +1,10 @@
-# Project builder for resin.io devices
-# rcdiana is multiarch, so no need to configure further!
+# rcDiana sample builder
+
+# rcdiana is multiarch, so this is typically sufficient for a manual install
+# on either amd64 (intel) or armc7hf (raspberry pi)
+
+# On resin may need to add ":armv7h" tags for raspberry pi b/c the uploader is
+# arm64 and will try to grab arm64 by preference rather that the target arch.
 
 version: '2.1'
 
@@ -13,9 +18,10 @@ services:
       - "4242:4242"
       - "80:8042"  # Putting this on 80 makes it publishable on Resin
 
-  python:
-    image: rcdiana/python
+  learn:
+    image: rcdiana/learn
     restart: always
     privileged: true
-
+    links:
+      - "dicom:dicom"
 
