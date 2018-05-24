@@ -7,86 +7,59 @@ python:
 services:
   - docker
 
-jobs:
-  include:
-    - stage: Setup environment
-      script:
+install:
+  - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
 
-        - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
-        - sudo apt-get update -qq
+  # Add docker edge
+  - sudo apt-get update -qq
+  - sudo apt-get -y install docker-ce
+  - docker --version
+  - docker-compose version
 
-        - docker --version
+  # Setup Ansible-Container
+  - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
+  - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
-        # Add docker edge
-        - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
-        - sudo apt-get update
-        - sudo apt-get -y install docker-ce
+before_script:
 
-        - docker --version
+  - cd ansible-containers/base
+  - pwd
 
-        # Setup docker experimental
-        - echo '{"experimental":"enabled"}' > config.json
+  - export $RCD_ARCH=amd64
+  - echo $RCD_ARCH
+  ## Get working conductor for arch
+  - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+  - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
 
-        - docker --version
-        - docker-compose version
+  - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+  - ansible-container build
 
-        # Setup Ansible-Container
-        - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
-        - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
+  - export $RCD_ARCH=armv7hf
+  - echo $RCD_ARCH
 
-    - stage: Build service images
+  # Get working conductor for arch
+  - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+  - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
 
-      env:
-        - RCD_ARCH=amd64
-        - RCD_ARCH=armv7hf
+  - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+  - ansible-container build
 
-      script:
+script: true
 
-          # Build it
-        - cd ansible-containers/base
-        - pwd
+after_script:
+  # Login to docker, retag, manifest, and push
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-        - echo $RCD_ARCH
-
-    - stage: deploy
-      script:
-
-        # Only want to do this _once_ at the end
-
-        # Login to docker, retag, manifest, and push
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-        # Need to put docker on experimental to have access to manifest...
-        - python manifest-it.py -m -d rcd-manifests.yml
+  # Need to put docker on experimental to have access to manifest...
+  - python manifest-it.py -m rcd-manifests.yml
 
 
 
-#
-## Build amd64 containers
-#- export RCD_ARCH=amd64
-#
-## Get working conductor
-#- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-#- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-#
-#- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
-#- ansible-container build
-#
-## Build armv7hf containers
-#- export RCD_ARCH=armv7hf
-#
-## Get working conductor
-#- docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-#- docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-#
-#- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
-#- ansible-container build
-#
-### Run it
-##- ansible-container run
-##- docker ps -a
-##- docker images
-##- ansible-container stop -f
+
+
+
+
 
 
 
