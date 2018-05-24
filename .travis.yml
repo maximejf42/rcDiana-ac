@@ -31,7 +31,7 @@ install:
 script:
 
 # Build it
-- cd ansible-container/base
+- cd ansible-containers/base
 - pwd
 #- sed -i "/s/armv7hf/$RCD_ARCH/" container.yml  # Replace any leftover wrong arch's
 - ansible-container build
