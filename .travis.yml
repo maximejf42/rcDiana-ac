@@ -15,6 +15,10 @@ before_install:
 - sudo apt-add-repository 'deb http://archive.ubuntu.com/ubuntu trusty-backports universe'
 - sudo apt-get update -qq
 
+# Turn on docker experimental
+- echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
+- sudo docker service restart
+
 install:
 - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
 - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
@@ -37,7 +41,7 @@ script:
 - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
 - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
 
-- sed -E "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
 - ansible-container build
 
 # Build armv7hf containers
@@ -47,7 +51,7 @@ script:
 - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
 - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
 
-- sed -E "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+- sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
 - ansible-container build
 
 ## Run it
@@ -58,6 +62,8 @@ script:
 
 # Only want to do this _once_ at the end
 # Login to docker, retag, manifest, and push
+
+# TODO: Need to put docker on experimental to have access to manifest...
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - python tag_and_manifest.py
 

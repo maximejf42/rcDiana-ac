@@ -101,18 +101,21 @@ The base images respect 3 built-in environment variables:
 
 ### Conda for armv7hf
 
-To build the `conda` image with a different Conda distribution, such as Continuum's Python 2.7.10 armv7 release, override the environment variable `CONDA_PKG` to the appropriate download location at build-time.  
+To build the `conda` image with a different Conda distribution, such as Continuum's Python 2.7.10 armv7l release, override the environment variable `CONDA_PKG` to the appropriate download location at build-time.  
 
 The most recent (outdated) Continuum miniconda for armv7hf can be found at <https://repo.continuum.io/miniconda/Miniconda-3.16.0-Linux-armv7l.sh>
 
-
 ### Compiling Conda for aarch64
+
+Conda can be built from `conda-constructor` for arm64 (as contributed by the same person who manages the BerryConda distrubiton).
 
 ```bash
 $ mkdir /tmp/pkg
 $ docker build -t pkg ./conda_aarch64_pkg
 $ docker run -it -v "/tmp/pkg:/host/pkg" pkg
 ```
+
+In practice, this seems to have a very limited package set (no numpy, etc.)
 
 Notes
 -----------------
