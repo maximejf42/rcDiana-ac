@@ -19,7 +19,6 @@ before_install:
 # - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
 # - sudo service docker restart
 # Turn on docker experimental for the CLI
-- echo '{"experimental":true}' > ~/.docker/config.json
 
 install:
 - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
@@ -36,9 +35,9 @@ script:
 - cd ansible-containers/base
 - pwd
 
-# Need to put docker on experimental to have access to manifest...
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-- python tag_and_manifest.py
+- echo '{"experimental":true}' > docker.json
+- docker --config docker.json manifest
+
 #
 ## Build amd64 containers
 #- export RCD_ARCH=amd64
