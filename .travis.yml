@@ -17,7 +17,7 @@ before_install:
 
 # Turn on docker experimental
 - echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
-- sudo docker service restart
+- sudo service docker restart
 
 install:
 - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
