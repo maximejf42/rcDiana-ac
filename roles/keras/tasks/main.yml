@@ -35,7 +35,7 @@
 - name: Add Keras environment variables
   lineinfile:
     name: ~/.bashrc
-    line: "export KERAS_BACKEND={{KERAS_BACKEND}} PYTHONWARNINGS=ignore"
+    line: "export KERAS_BACKEND={{KERAS_BACKEND}}"
     create: true
 
 - name: Add Keras MKL environment var
@@ -47,7 +47,6 @@
 
 - pip:
     name: "keras"
-    extra_args: "--no-cache-dir --ignore-installed"  #  --no-dependencies
     executable: /opt/conda/bin/pip
 
 - name: Test and print package lists

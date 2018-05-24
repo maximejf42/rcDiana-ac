@@ -22,37 +22,37 @@ settings:
   deployment_output_path: ../ansible-deployment
 
 services:
+#
+#  sshd:
+#    from: "resin/{{ RCD_ARCH }}-debian:stretch"
+#    roles:
+#      - sshd
+#    entrypoint: ["/usr/bin/tini", "--"]
+#    command:    ["/usr/sbin/sshd", "-D"]
+#    ports:
+#      - "2222:22"
 
-  sshd:
-    from: "resin/{{ RCD_ARCH }}-debian:stretch"
-    roles:
-      - sshd
-    entrypoint: ["/usr/bin/tini", "--"]
-    command:    ["/usr/sbin/sshd", "-D"]
-    ports:
-      - "2222:22"
+#  dicom:
+#    from: "resin/{{ RCD_ARCH }}-debian:stretch"
+#    roles:
+#      - orthanc
+#
+#    entrypoint: ["/usr/bin/tini", "--"]
+#    command:    ["/usr/sbin/Orthanc"]
+#    ports:
+#      - "8042:8042"
+#      - "4242:4242"
 
-  dicom:
-    from: "resin/{{ RCD_ARCH }}-debian:stretch"
-    roles:
-      - orthanc
-
-    entrypoint: ["/usr/bin/tini", "--"]
-    command:    ["/usr/sbin/Orthanc"]
-    ports:
-      - "8042:8042"
-      - "4242:4242"
-
-  python:
-    from: "resin/{{ RCD_ARCH }}-debian:stretch"
-    roles:
-      - conda
-
-    entrypoint: ["/usr/bin/tini", "--"]
-    command:    ["tail", "-f", "/dev/null"]
+#  python:
+#    from: "resin/{{ RCD_ARCH }}-debian:stretch"
+#    roles:
+#      - conda
+#
+#    entrypoint: ["/usr/bin/tini", "--"]
+#    command:    ["tail", "-f", "/dev/null"]
 
   learn:
-    from: "rcdiana-{{ RCD_ARCH }}-python:latest"
+    from: "rcdiana-{{ RCD_ARCH }}-tensorflow:latest"
     roles:
       - keras
       # Use "from:conda"/dep python and removed role dependencies on common and conda
