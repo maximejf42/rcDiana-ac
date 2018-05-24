@@ -28,12 +28,12 @@ before_install:
   - docker info
 
   # Turn on docker experimental
-  - echo '{"experimental":true}' > docker.json
+  - echo '{"experimental":true}' > config.json
 
-  - docker --config docker.json --version
-  - docker --config docker.json info
+  - docker --config . --version
+  - docker --config . info
 
-  - docker --config docker.json manifest
+  - docker --config . manifest
 #
 #install:
 #- pip install https://github.com/ansible/ansible/archive/devel.tar.gz
