@@ -19,9 +19,12 @@ before_install:
   - docker info
 
   # Add docker edge
+
+  - lsw_release -cs
+
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
   - sudo apt-get update
-  - sudo apt-get -y install docker-ce=17.05.0~ce-0~ubuntu-trusty
+  - sudo apt-get -y install docker-ce=17.11.0~ce-0~ubuntu-trusty
 
   - docker --version
   - docker info
