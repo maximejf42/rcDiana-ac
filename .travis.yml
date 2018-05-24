@@ -34,11 +34,11 @@ jobs:
         - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
         - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
-    - stage: Setup environment
+    - stage: Build service images
 
       env:
-        RCD_ARCH: amd64
-        RCD_ARCH: armv7hf
+        - RCD_ARCH=amd64
+        - RCD_ARCH=armv7hf
 
       script:
 
