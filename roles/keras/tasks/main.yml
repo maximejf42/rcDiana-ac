@@ -8,6 +8,7 @@
       - build-essential
 #      - libopenblas-base  # In conda as numpy dep in both conda and berryconda
       - python2.7-dev
+      - git # should probably put this in with common as a required package...
     install_recommends: no
     autoclean: yes
 

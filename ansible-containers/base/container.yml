@@ -9,7 +9,8 @@ settings:
 
   conductor:
     # defaults vars don't work in here, update archicture in base and project
-    base: "resin-amd64:stretch"
+    # Wants a base, but runs without it
+#    base: "resin-amd64:stretch"
 #    base: "resin-armv7hf:stretch"
     roles_path:
       - ../../roles   # Specify a local path containing Ansible roles

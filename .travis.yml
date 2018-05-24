@@ -1,5 +1,5 @@
 sudo: required
-
+dist: trusty
 language: python
 python:
     - "3.6"
@@ -19,12 +19,16 @@ install:
 - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
 - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
 
-script:
+# Get working conductor
+- docker pull rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+- docker tag rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0 container-conductor-resin-amd64-stretch:0.9.3rc0
 
 # Collect info
 - docker version
 - docker-compose version
 - docker info
+
+script:
 
 # Build it
 - cd ansible-container/base
@@ -38,12 +42,9 @@ script:
 - docker images
 - ansible-container stop -f
 
-# Tag and push
-
-# Login to docker for push
+# Login to docker, retag, manifest, and push
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - python tag_and_manifest.py
-
 
 #jobs:
 #  include:
@@ -67,9 +68,6 @@ script:
 #      if: env(BUILD_AMD64)
 #      name: build_amd64
 #      script:
-#        # Setup conductor
-#        - docker pull rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-#        - docker tag rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0 container-conductor-resin-amd64-stretch:0.9.3rc0
 #
 #        # Build containers
 #        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && ansible-container build
@@ -77,6 +75,4 @@ script:
 #        # Login to docker for push
 #        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 #        - cd $TRAVIS_BUILD_DIR/ansible-containers/base && python tag_and_manifest.py
-#
-#
-#
+
