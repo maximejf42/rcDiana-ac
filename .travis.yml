@@ -16,65 +16,75 @@ install:
   - docker --version
   - docker-compose version
 
-  # Setup Ansible-Container
-  - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
-  - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
+  - ls .docker
+  - echo '{"experimental": "enabled"}' > .docker/config.json
 
-  # Register qemu as cross-compiler
-  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-
-#after_install:
-#  # build conductors
-#  - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
-#
-#  # Login to docker for push
-#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-#
-#  # Push conductors for reference
-#  - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-#  - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
-#
-#  - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
-#  - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
-
-before_script:
-  # Build containers
   - cd ansible-containers/base
-  - pwd
-
-  - export RCD_ARCH=amd64
-  - echo $RCD_ARCH
-  ## Get working conductor for arch
-  - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-  - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-
-  - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
-  - ansible-container build
-
-  - export RCD_ARCH=armv7hf
-  - echo $RCD_ARCH
-
-  # Get working conductor for arch
-  - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-  - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
-
-  - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
-  - ansible-container build
-
-script: true
-
-after_script:
-  # Login to docker, retag, manifest, and push
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  # -m mocks docker into experimental to have access to manifest
   - python manifest-it.py -m rcd-manifests.yml
 
-
-
-
-
-
-
+#
+#
+#  # Setup Ansible-Container
+#  - pip install https://github.com/ansible/ansible/archive/devel.tar.gz
+#  - pip install -e git+https://github.com/ansible/ansible-container.git@develop#egg=ansible_container[docker]
+#
+#  # Register qemu as cross-compiler
+#  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+#
+##after_install:
+##  # build conductors
+##  - cd $TRAVIS_BUILD_DIR/ansible-containers/conductors && docker-compose build
+##
+##  # Login to docker for push
+##  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+##
+##  # Push conductors for reference
+##  - docker tag container-conductor-resin-amd64-stretch:0.9.3rc0 rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+##  - docker push rcdiana/container-conductor-resin-amd64-stretch:0.9.3rc0
+##
+##  - docker tag container-conductor-resin-armv7hf-stretch:0.9.3rc0 rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
+##  - docker push rcdiana/container-conductor-resin-armv7hf-stretch:0.9.3rc0
+#
+#before_script:
+#  # Build containers
+#  - cd ansible-containers/base
+#  - pwd
+#
+#  - export RCD_ARCH=amd64
+#  - echo $RCD_ARCH
+#  ## Get working conductor for arch
+#  - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#  - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#
+#  - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+#  - ansible-container build
+#
+#  - export RCD_ARCH=armv7hf
+#  - echo $RCD_ARCH
+#
+#  # Get working conductor for arch
+#  - docker pull rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#  - docker tag rcdiana/container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0 container-conductor-resin-${RCD_ARCH}-stretch:0.9.3rc0
+#
+#  - sed -E -i "s/(amd64)|(armv7hf)/$RCD_ARCH/" container.yml  # Replace settings arches
+#  - ansible-container build
+#
+#script: true
+#
+## TODO: docker manifest _still_ doesn't work when invoked like this
+#
+#after_script:
+#  # Login to docker, retag, manifest, and push
+#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#  # -m mocks docker into experimental to have access to manifest
+#  - python manifest-it.py -m rcd-manifests.yml
+#
+#
+#
+#
+#
+#
+#
 
 
 

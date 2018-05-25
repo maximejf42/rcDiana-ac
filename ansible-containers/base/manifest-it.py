@@ -8,6 +8,8 @@ from subprocess import call
 from argparse import ArgumentParser
 import os
 
+
+# noinspection PyPackageRequirements,PyPackageRequirements,PyPackageRequirements
 def docker_tag(item, new):
     cmd = ['docker', 'tag', item, new]
     if opts.mock:
@@ -67,7 +69,7 @@ if __name__ == "__main__":
         items = yaml.safe_load(f)
 
     if opts.mock:
-        with open('json.config', 'w') as f:
+        with open('./config.json', 'w') as f:
             f.write('{"experimental":"enabled"}')
 
     for item in items:
@@ -90,4 +92,4 @@ if __name__ == "__main__":
             docker_manifest_push(prime)
 
     if opts.mock:
-        os.remove('json.config')
+        os.remove('config.json')
