@@ -16,8 +16,8 @@ install:
   - docker --version
   - docker-compose version
 
-  - ls .docker
-  - echo '{"experimental":"enabled"}' > .docker/config.json
+  - ls -a $HOME/.docker
+  - echo '{"experimental":"enabled"}' > "$HOME/.docker/config.json"
 
   - cd ansible-containers/base
   - python manifest-it.py -m rcd-manifests.yml
