@@ -1,7 +1,7 @@
 # rcDiana simple service setup
 
 # rcdiana is multiarch, so this is typically sufficient for a manual install
-# on either amd64 (intel) or armc7hf (raspberry pi)
+# on either amd64 (intel) or armv7hf (raspberry pi)
 
 # On resin may need to add ":armv7h" tags for raspberry pi b/c the uploader is
 # arm64 and will try to grab arm64 by preference rather that the target arch.
@@ -9,7 +9,7 @@
 version: '2.1'
 
 services:
-#
+
 #  dicom:
 #    image: rcdiana/dicom:armv7hf
 #    restart: always
@@ -18,13 +18,23 @@ services:
 #      - "4242:4242"
 #      - "80:8042"  # Putting this on 80 makes it publishable on Resin
 
-  learn:
-    image: rcdiana/learn:amd64
-    restart: always
-    privileged: true
+#  learn:
+#    image: rcdiana/learn:armv7hf
+#    restart: always
+#    privileged: true
 #    links:
 #      - "dicom:dicom"
+#
+#    volumes:
+#      - "./tests/learn:/data"
 
+  movidius:
+    image: rcdiana/movidius:armv7hf
+    restart: always
+    privileged: true
+    network_mode: host
     volumes:
-      - "./tests/learn:/data"
+      - "/dev:/dev"
+#    links:
+#      - "dicom:dicom"
 

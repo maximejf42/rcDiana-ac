@@ -8,8 +8,9 @@
 - name: Add orthanc.json
   template:
     src: orthanc.json.j2
-    dest: /etc/orthanc.json
-  notify: restart_orthanc  # this is irrelevant in ansible-container
+    dest: /etc/orthanc/orthanc.json
+  notify: restart_orthanc
+  # Bouncing the service is irrelevant when building statelessly in ansible-container
 
 - name: Start orthanc
   service:

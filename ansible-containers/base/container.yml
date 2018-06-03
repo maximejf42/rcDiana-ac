@@ -35,38 +35,58 @@ services:
   dicom:
     from: "resin/{{ RCD_ARCH }}-debian:stretch"
     roles:
-      - orthanc
-
+      - "orthanc"
     entrypoint: ["/usr/bin/tini", "--"]
     command:    ["/usr/sbin/Orthanc"]
+    volumes:
+      - "/var/lib/orthanc/db/"
     ports:
       - "8042:8042"
       - "4242:4242"
 
+
   python:
     from: "resin/{{ RCD_ARCH }}-debian:stretch"
     roles:
-      - conda
-
+      - "conda"
     entrypoint: ["/usr/bin/tini", "--"]
     command:    ["tail", "-f", "/dev/null"]
+
+
+  movidius:
+    from: "resin/{{ RCD_ARCH }}-debian:stretch"
+    roles:
+      - "movidius"
+    entrypoint: ["/usr/bin/tini", "--"]
+    command:    ["tail", "-f", "/dev/null"]
+
 
   learn:
     from: "rcdiana-{{ RCD_ARCH }}-python:latest"
     roles:
-      - keras
+      - "keras"
       # Use "from:conda"/dep python and removed role dependencies on common and conda
 
     depends_on:
-      - python
+      - "python"
 
     entrypoint: ["/usr/bin/tini", "--"]
     command:    ["tail", "-f", "/dev/null"]
     links:
       - "dicom:dicom"
 
+#  classify:
+#    from: "rcdiana-{{ RCD_ARCH }}-learn:latest"
+#    roles:
+#      - "classify"
+#    depends_on:
+#      - "learn"
+#    entrypoint: ["/usr/bin/tini", "--"]
+#    command:    ["tail", "-f", "/dev/null"]
+#    links:
+#      - "dicom:dicom"
 
 registries:
   docker:
-    url: https://hub.docker.com/
-    namespace: rcdiana
+    url: "https://hub.docker.com/"
+    namespace: "rcdiana"

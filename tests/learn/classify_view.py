@@ -1,4 +1,6 @@
-import numpy as np 
+from __future__ import absolute_import
+
+import numpy as np
 import pydicom 
 
 from scipy.ndimage.interpolation import zoom 
@@ -48,7 +50,8 @@ def get_image_from_dicom(dicom_file, imsize=224):
     array = resize_image(array, imsize, verbose=False) 
     return array
 
-from keras.applications import MobileNet
+from mblgray import MobileNet
+# from keras.applications import MobileNet
 from keras.layers import Dense, Dropout, GlobalAveragePooling2D, Flatten
 from keras.engine import Model 
 from keras import optimizers 
@@ -56,9 +59,9 @@ from keras import optimizers
 def get_mobilenet(layer, lr=1e-3, input_shape=(224,224,1), dropout=None,
                   pooling="avg", weights=None):
   mnet = MobileNet(input_shape=input_shape,
-                  include_top=False,
-                   weights=weights)
-                  # channels="gray")
+                   include_top=False,
+                   weights=weights,
+                   channels="gray")
   if pooling == "avg":
     x = GlobalAveragePooling2D()(mnet.output)
   elif pooling == "max":
@@ -89,8 +92,9 @@ parser.add_argument("--dicom", "-d", type=str,
 
 args = parser.parse_args() 
 
-
-model = get_mobilenet(0, weights=args.model) 
+model = get_mobilenet(0, weights=None)
+model.load_weights(args.model)
+# model = get_mobilenet(0, weights=args.model)
 image = get_image_from_dicom(args.dicom) 
 
 prediction = model.predict(np.expand_dims(np.expand_dims(image, axis=2), axis=0)) 

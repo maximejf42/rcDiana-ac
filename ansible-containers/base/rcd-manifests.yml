@@ -45,3 +45,19 @@
       platform:
         architecture: amd64
         os: linux
+
+- image: rcdiana/movidius:latest
+  manifests:
+    -
+      image: "rcdiana/movidius:armv7hf"
+      ac_name: rcdiana-armv7hf-movidius
+      platform:
+        architecture: arm
+        variant: v7
+        os: linux
+    -
+      image: "rcdiana/movidius:amd64"
+      ac_name: rcdiana-amd64-movidius
+      platform:
+        architecture: amd64
+        os: linux

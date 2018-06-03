@@ -59,14 +59,9 @@
 - name: Reinstall mock
   shell: /opt/conda/bin/conda install -y --force mock
 
-#
-#- pip:
-#    name: mock
-#    state: absent
-#    extra_args: "--no-cache-dir --ignore-installed"
-#    executable: /opt/conda/bin/pip
-#
-#- pip:
-#    name: mock
-#    extra_args: "--no-cache-dir --ignore-installed --upgrade"
-#    executable: /opt/conda/bin/pip
+- name: Get rid of TensorFlow warnings
+  lineinfile:
+    name: ~/.bashrc
+    line: "export TF_CPP_MIN_LOG_LEVEL=2"
+    create: true
+#  when: RCD_ARCH=="amd64"
