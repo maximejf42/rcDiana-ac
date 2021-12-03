@@ -1,7 +1,7 @@
-ansible>=2.4,<2.5
+ansible>=2.9.6,<2.5
 PyYAML>=3.12
 docker-compose>=1.14
-requests>=2,<2.16
+requests>=2.20,<2.16
 ruamel.yaml>=0.15.34
 six>=1.10
 structlog[dev]>=16.1
