@@ -6,3 +6,4 @@ ruamel.yaml>=0.15.34
 six>=1.10
 structlog[dev]>=16.1
 python-string-utils>=0.6.0
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
